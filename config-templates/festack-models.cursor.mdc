@@ -1,0 +1,14 @@
+     1	---
+     2	alwaysApply: true
+     3	description: festack model-per-role mapping. Read by the festack-debate engine and festack skills.
+     4	---
+     5	
+     6	# festack models
+     7	
+     8	One role per line. Panels take a comma-separated list. The engine reads these; skills never hardcode slugs.
+     9	
+    10	debate-runners: gpt-5.5-high, claude-opus-4-8-thinking-high, composer-2.5
+    11	review-reviewers: gpt-5.5-high, claude-opus-4-8-thinking-high, composer-2.5
+    12	synthesizer: claude-opus-4-8-thinking-high
+    13	evaluator: gpt-5.5-high
+    14	classifier: composer-2.5

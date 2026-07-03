@@ -1,0 +1,79 @@
+digraph RAG {
+  rankdir=LR;
+  bgcolor="white";
+  fontname="Helvetica";
+  labelloc="t";
+  label=<<B>Enterprise RAG Support Assistant</B><BR/><FONT POINT-SIZE="12" COLOR="#64748b">How a user question becomes a grounded, governed answer, and how knowledge stays fresh</FONT><BR/> >;
+  fontsize=22;
+  fontcolor="#0f172a";
+  nodesep=0.45;
+  ranksep=0.9;
+  splines=spline;
+  pad=0.4;
+
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12, fontcolor="#0f172a", color="#cbd5e1", fillcolor="#f8fafc", penwidth=1.4, margin="0.20,0.13"];
+  edge [color="#94a3b8", fontname="Helvetica", fontsize=10, fontcolor="#475569", penwidth=1.3, arrowsize=0.8];
+
+  user [label="End user", shape=ellipse, fillcolor="#e2e8f0", color="#94a3b8"];
+
+  subgraph cluster_app {
+    label="App"; labeljust="l"; fontname="Helvetica-Bold"; fontsize=13; fontcolor="#2563eb";
+    style="rounded,filled"; color="#bfdbfe"; fillcolor="#eff6ff"; margin=16;
+    chat [label="Chat / app\nsurface", fillcolor="#dbeafe", color="#3b82f6"];
+  }
+
+  subgraph cluster_serve {
+    label="Online answer path"; labeljust="l"; fontname="Helvetica-Bold"; fontsize=13; fontcolor="#4f46e5";
+    style="rounded,filled"; color="#c7d2fe"; fillcolor="#eef2ff"; margin=16;
+    orch [label="Orchestration\nservice", fillcolor="#e0e7ff", color="#6366f1"];
+    retr [label="Retrieval\nservice", fillcolor="#e0e7ff", color="#6366f1"];
+    cite [label="Citation +\ngrounding", fillcolor="#e0e7ff", color="#6366f1"];
+    subgraph cluster_guard {
+      label="Guardrails: input + output"; labeljust="l"; fontname="Helvetica-Bold"; fontsize=10; fontcolor="#ea580c";
+      style="rounded,filled"; color="#fdba74"; fillcolor="#fff7ed"; margin=12;
+      gen [label="LLM\ngeneration", fillcolor="#ffedd5", color="#ea580c"];
+    }
+    rerank [label="Reranker", style="rounded,filled,dashed", fillcolor="#ffffff", color="#94a3b8", fontcolor="#64748b"];
+    cache [label="Response\ncache", style="rounded,filled,dashed", fillcolor="#ffffff", color="#94a3b8", fontcolor="#64748b"];
+  }
+
+  vindex [label="Vector\nindex", shape=cylinder, fillcolor="#bfdbfe", color="#1d4ed8", penwidth=3, fontcolor="#0f172a", fontname="Helvetica-Bold"];
+
+  subgraph cluster_ingest {
+    label="Knowledge ingestion   (offline, scheduled / event-driven)"; labeljust="l"; fontname="Helvetica-Bold"; fontsize=13; fontcolor="#059669";
+    style="rounded,filled"; color="#a7f3d0"; fillcolor="#ecfdf5"; margin=16;
+    src [label="Knowledge sources\ndocs, tickets, KB", fillcolor="#d1fae5", color="#10b981"];
+    conn [label="Ingestion\nconnector", fillcolor="#d1fae5", color="#10b981"];
+    chunk [label="Chunking +\nnormalization", fillcolor="#d1fae5", color="#10b981"];
+    embed [label="Embedding\ngenerator", fillcolor="#d1fae5", color="#10b981"];
+    src -> conn -> chunk -> embed [color="#34d399", penwidth=1.6];
+  }
+
+  subgraph cluster_gov {
+    label="Governance + observability   (cross-cutting)"; labeljust="l"; fontname="Helvetica-Bold"; fontsize=13; fontcolor="#d97706";
+    style="rounded,filled"; color="#fde68a"; fillcolor="#fffbeb"; margin=16;
+    gov [label="Access +\npermission control", fillcolor="#fef3c7", color="#f59e0b"];
+    obs [label="Observability +\nfeedback / eval", fillcolor="#fef3c7", color="#f59e0b"];
+  }
+
+  user -> chat [label="question"];
+  chat -> orch [label="request"];
+  orch -> retr;
+  retr -> vindex [label="search"];
+  vindex -> retr [label="chunks"];
+  retr -> gen [label="context"];
+  gen -> cite;
+  cite -> chat [label="grounded answer"];
+  chat -> user [label="answer"];
+
+  retr -> rerank [style=dashed, color="#cbd5e1", label="future", fontcolor="#94a3b8"];
+  rerank -> gen [style=dashed, color="#cbd5e1"];
+  chat -> cache [style=dashed, color="#cbd5e1", label="cache hit", fontcolor="#94a3b8"];
+  cache -> chat [style=dashed, color="#cbd5e1"];
+
+  embed -> vindex [label="upsert", color="#34d399", penwidth=1.6];
+
+  gov -> conn [label="permission\nat ingest", color="#fbbf24"];
+  gov -> retr [label="permission-\nfiltered", color="#fbbf24"];
+  obs -> orch [style=dashed, color="#fcd34d", label="tune k / prompts"];
+}

@@ -1,0 +1,59 @@
+capabilities:
+  research.account:
+    preferred:
+      - provider: /discovery
+        type: core-skill
+        when: default account research
+      - provider: mcp:user-glean/search
+        type: mcp-tool
+        when: internal account docs are needed
+        auth_preflight: verify MCP server and search schema before querying
+        shareability: internal evidence only; summarize without exposing private sources
+        handoff: account context, sources, confidence, and open questions
+    fallback: /discovery
+
+  research.product_question:
+    preferred:
+      - provider: /client-debug
+        type: core-skill
+        when: default cited product answer
+      - provider: mcp:user-Context7/get-library-docs
+        type: mcp-tool
+        when: current public documentation is needed
+        auth_preflight: read MCP tool descriptor and validate arguments
+        shareability: public docs are client-citable
+        handoff: cited answer, caveats, confidence, and client-citable links
+    fallback: /client-debug
+
+  fetch.customer_usage:
+    preferred:
+      - provider: mcp:user-databricks-v2/execute_parameterized_sql
+        type: mcp-tool
+        when: governed usage data is available
+        auth_preflight: verify workspace connection and SQL tool schema
+        shareability: internal only unless approved for client use
+        handoff: usage summary, query caveats, source freshness
+    fallback: ask
+
+  fetch.open_risks:
+    preferred:
+      - provider: mcp:user-jira/search
+        type: mcp-tool
+        when: open blockers or escalations are needed
+        auth_preflight: verify issue-search schema and access
+        shareability: internal only
+        handoff: risk list, owners, status, and caveats
+    fallback: ask
+
+  build.approved_scope:
+    preferred:
+      - provider: /autopilot
+        type: core-skill
+        when: default approved-build execution
+      - provider: databricks-resource-deployment
+        type: company-skill
+        when: deployment adapter is installed and approved
+        auth_preflight: validate workspace, target, and deploy permissions
+        shareability: build evidence can be summarized for the client
+        handoff: deployment status, checks, rollback evidence
+    fallback: /autopilot

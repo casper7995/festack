@@ -1,0 +1,62 @@
+flowchart LR
+  user([End user])
+  chat["Chat / app surface"]
+
+  subgraph SERVE["Retrieval and serving — online answer path"]
+    direction LR
+    orch["Orchestration service"]
+    retr["Retrieval service"]
+    gen["LLM generation"]
+    cite["Citation / grounding assembler"]
+    rerank["Reranker"]:::future
+    cache["Response cache"]:::future
+  end
+
+  grd["Guardrails: input + output filters"]:::accent
+  vindex[("Vector index")]:::spine
+
+  subgraph INGEST["Knowledge ingestion — offline, scheduled / event-driven"]
+    direction LR
+    src["Knowledge sources<br/>docs, tickets, KB"]
+    conn["Ingestion connector"]
+    chunk["Chunking + normalization"]
+    embed["Embedding generator"]
+    src --> conn --> chunk --> embed
+  end
+
+  subgraph GOV["Governance and observability — cross-cutting"]
+    direction LR
+    gov["Access and permission control"]
+    obs["Observability + feedback / eval loop"]
+  end
+
+  %% online answer path
+  user -->|question| chat
+  chat -->|request| orch
+  orch --> retr
+  retr -->|search| vindex
+  vindex -->|chunks| retr
+  retr -->|context| gen
+  gen --> cite
+  cite -->|grounded answer| chat
+  chat -->|answer| user
+  grd -. filters .- gen
+
+  %% future-state enhancements
+  retr -. future .-> rerank
+  rerank -. future .-> gen
+  chat -. cache hit: previously grounded .-> cache
+  cache -. answer .-> chat
+
+  %% offline freshness path
+  embed -->|upsert| vindex
+
+  %% governance: real dependency edges, not decoration
+  gov -->|permission at ingest| conn
+  gov -->|permission-filtered retrieval| retr
+  obs -. tune k / prompts .-> orch
+  obs -. instruments .- gen
+
+  classDef future stroke:#9aa0a6,stroke-dasharray:5 5,fill:#f4f4f4,color:#5f6368;
+  classDef spine fill:#eaf2ff,stroke:#1a73e8,stroke-width:3px,color:#202124;
+  classDef accent fill:#fff4e5,stroke:#e8710a,stroke-width:2px,color:#202124;

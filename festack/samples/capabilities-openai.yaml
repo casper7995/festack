@@ -1,0 +1,55 @@
+capabilities:
+  research.account:
+    preferred:
+      - provider: /discovery
+        type: core-skill
+        when: default account research
+      - provider: mcp:user-glean/search
+        type: mcp-tool
+        when: internal customer context is needed
+        auth_preflight: verify MCP server and search schema before querying
+        shareability: internal evidence only unless explicitly shareable
+        handoff: account context, use cases, stakeholders, sources, unknowns
+    fallback: /discovery
+
+  research.product_question:
+    preferred:
+      - provider: /client-debug
+        type: core-skill
+        when: default cited product answer
+      - provider: mcp:user-Context7/get-library-docs
+        type: mcp-tool
+        when: public API or SDK docs are needed
+        auth_preflight: read MCP tool descriptor and validate arguments
+        shareability: public docs are client-citable
+        handoff: cited answer, caveats, confidence, and client-citable links
+      - provider: mcp:user-glean/search
+        type: mcp-tool
+        when: security, governance, or roadmap context may affect confidence
+        auth_preflight: verify MCP server and query schema
+        shareability: internal signal only; do not quote to client
+        handoff: confidence modifiers, caveats, escalation owners
+    fallback: /client-debug
+
+  decide.approach:
+    preferred:
+      - provider: /solution-critic
+        type: core-skill
+        when: RAG, agent, eval, or deployment architecture options compete
+        auth_preflight: verify model-role config is available
+        shareability: recommendation is client-shareable after review
+        handoff: recommended architecture, alternatives rejected, dissent, open forks
+    fallback: /solution-critic
+
+  build.approved_scope:
+    preferred:
+      - provider: /autopilot
+        type: core-skill
+        when: default approved-build execution
+      - provider: mcp:user-ai-dev-kit/deploy
+        type: mcp-tool
+        when: approved app, eval, or deployment adapter is available
+        auth_preflight: read MCP descriptor and validate deployment arguments
+        shareability: evidence can be client-shareable after review
+        handoff: deployment or eval status, checks, artifact path, rollback notes
+    fallback: /autopilot

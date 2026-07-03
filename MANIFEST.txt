@@ -1,0 +1,21 @@
+festack setup package
+=====================
+
+Packaged: 2026-07-03
+Plugin version: 0.1.0 (from .cursor-plugin/plugin.json)
+Source commit: bd76cb6 — fix FESTACK_HOME resolution via shell check + cross-host index probe
+
+Contents:
+- festack/              Plugin source (skills, agents, hooks, scripts, samples)
+- config-templates/   Blank profile, model roles, capability samples, hooks merge
+- install.sh            Wrapper around festack/scripts/install.sh
+- SETUP-GUIDE.md        Recipient setup instructions
+
+Excluded (intentionally):
+- Personal profile.md
+- Engagement ledgers (engagements/)
+- Git history (.git)
+- Company-specific capability wiring
+
+Recipient next step:
+  ./install.sh cursor && reload Cursor && /setup-festack

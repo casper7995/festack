@@ -1,0 +1,12 @@
+.DS_Store
+*.log
+__pycache__/
+*.pyc
+.cursor/
+
+# User-local festack state — never commit
+profile.md
+capabilities.yaml
+capabilities.md
+lessons.md
+engagements/

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "command": "./festack/hooks/session-start.sh" }
+    ],
+    "beforeMCPExecution": [
+      { "command": "python3 ~/.cursor/festack/hooks/check_ledger.py" }
+    ]
+  }
+}

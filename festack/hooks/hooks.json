@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__google__gmail_message_send|mcp__google__drive_file_create|mcp__slack__slack_write_api_call",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/check_ledger.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

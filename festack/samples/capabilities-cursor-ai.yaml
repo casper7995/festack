@@ -1,0 +1,55 @@
+capabilities:
+  research.account:
+    preferred:
+      - provider: /discovery
+        type: core-skill
+        when: default account research
+      - provider: mcp:user-glean/search
+        type: mcp-tool
+        when: internal account notes or rollout history are needed
+        auth_preflight: verify MCP server and search schema before querying
+        shareability: internal evidence only unless explicitly shareable
+        handoff: account context, stakeholder hints, sources, open questions
+    fallback: /discovery
+
+  research.product_question:
+    preferred:
+      - provider: /client-debug
+        type: core-skill
+        when: default cited product answer
+      - provider: mcp:user-Context7/get-library-docs
+        type: mcp-tool
+        when: public product or SDK docs are needed
+        auth_preflight: read MCP tool descriptor and validate arguments
+        shareability: public docs are client-citable
+        handoff: cited answer, caveats, confidence, and client-citable links
+      - provider: mcp:user-slack/search
+        type: mcp-tool
+        when: recent internal context may affect confidence
+        auth_preflight: verify search schema and access
+        shareability: internal signal only; do not quote to client
+        handoff: confidence modifiers and who to confirm with
+    fallback: /client-debug
+
+  decide.approach:
+    preferred:
+      - provider: /solution-critic
+        type: core-skill
+        when: developer workflow rollout choices compete
+        auth_preflight: verify model-role config is available
+        shareability: recommendation is client-shareable after review
+        handoff: recommended rollout approach, rationale, dissent, open forks
+    fallback: /solution-critic
+
+  build.approved_scope:
+    preferred:
+      - provider: /autopilot
+        type: core-skill
+        when: default approved-build execution
+      - provider: mcp:user-ai-dev-kit/build
+        type: mcp-tool
+        when: demo or sandbox builder is available
+        auth_preflight: read MCP descriptor and validate build target arguments
+        shareability: demo evidence can be client-shareable after review
+        handoff: artifact path, checks, preview evidence, rollback notes
+    fallback: /autopilot

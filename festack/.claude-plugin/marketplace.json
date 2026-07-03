@@ -1,0 +1,18 @@
+{
+  "name": "festack",
+  "description": "Vendor-neutral SA/Field-Engineering workflow stack (single-plugin marketplace).",
+  "owner": {
+    "name": "Casper Hsieh"
+  },
+  "plugins": [
+    {
+      "name": "festack",
+      "description": "Multi-model debate, Socratic decision gates, canvas-first deliverables, and continual learning for the SA engagement lifecycle.",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "Casper Hsieh"
+      }
+    }
+  ]
+}

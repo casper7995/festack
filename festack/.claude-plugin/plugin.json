@@ -1,0 +1,16 @@
+{
+  "name": "festack",
+  "description": "A vendor-neutral workflow stack for Solution Architects and Field Engineers. Points multi-model debate, Socratic decision gates, and continual learning at the engagement lifecycle. The unit of work is a client deliverable, not a code diff.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Casper Hsieh"
+  },
+  "license": "MIT",
+  "keywords": [
+    "solution-architect",
+    "field-engineering",
+    "pre-sales",
+    "multi-model",
+    "debate"
+  ]
+}
